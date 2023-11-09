@@ -7,6 +7,7 @@ const authRoute = require("./routes").auth;
 const courseRoute = require("./routes").course;
 const passport = require("passport");
 require("./config/passport")(passport);
+const cors = require("cors");
 
 mongoose
   .connect("mongodb://localhost:27017/mernDB")
@@ -19,6 +20,7 @@ mongoose
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
+app.use(cors());
 
 app.use("/api/user", authRoute);
 app.use(
