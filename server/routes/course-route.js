@@ -18,6 +18,42 @@ router.get("/", async (req, res) => {
   }
 });
 
+// 用講師id來尋找課程
+router.get("/instructor/:_instructor_id", async (req, res) => {
+  let { _instructor_id } = req.params;
+  try {
+    let coursesFound = await Course.find({ instructor: _instructor_id })
+      .populate("instructor", ["username", "email"])
+      .exec();
+
+    return res.send(coursesFound);
+  } catch (e) {
+    console.log(e);
+  }
+});
+
+// 用學生id來尋找課程
+router.get("/student/:_student_id", async (req, res) => {
+  let { _student_id } = req.params;
+  let coursesFound = await Course.find({ students: _student_id })
+    .populate("instructor", ["username", "email"])
+    .exec();
+  return res.send(coursesFound);
+});
+
+// 用課程名稱尋找課程
+router.get("/findByName/:name", async (req, res) => {
+  let { name } = req.params;
+  try {
+    let courseFound = await Course.find({ title: name })
+      .populate("instructor", ["email", 'username'])
+      .exec();
+    return res.send(courseFound);
+  } catch (e) {
+    return res.status(500).send(e);
+  }
+});
+
 // 用id尋找特定課程
 router.get("/:_id", async (req, res) => {
   let { _id } = req.params;
