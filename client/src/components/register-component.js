@@ -23,7 +23,7 @@ const RegisterComponent = () => {
     setRole(e.target.value);
   };
 
-  const handleRegister = async () => {
+  const handleRegister = () => {
     AuthService.register(username, email, password, role)
       .then(() => {
         window.alert("註冊成功!!!");
