@@ -2,9 +2,11 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import AuthService from "../services/auth.service";
 
-const LoginComponent = (props) => {
+const LoginComponent = ({ currentUser, setCurrentUser }) => {
+  const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [message, setMessage] = useState("");
 
   const handleEmail = (e) => {
     setEmail(e.target.value);
@@ -18,15 +20,19 @@ const LoginComponent = (props) => {
     console.log(email, password);
     try {
       let res = await AuthService.login(email, password);
-      console.log(res);
+      localStorage.setItem("user", JSON.stringify(res.data));
+      window.alert("登入成功!現在將導向個人頁面!");
+      setCurrentUser(AuthService.getCurrentUser());
+      navigate("/profile");
     } catch (e) {
-      console.log(e);
+      setMessage(e.response.data);
     }
   };
 
   return (
     <div style={{ padding: "3rem" }} className="col-md-12">
       <div>
+        {message && <div className="alert alert-danger">{message}</div>}
         <div className="form-group">
           <label htmlFor="username">電子信箱：</label>
           <input
