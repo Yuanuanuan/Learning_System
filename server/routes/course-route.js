@@ -46,7 +46,7 @@ router.get("/findByName/:name", async (req, res) => {
   let { name } = req.params;
   try {
     let courseFound = await Course.find({ title: name })
-      .populate("instructor", ["email", 'username'])
+      .populate("instructor", ["email", "username"])
       .exec();
     return res.send(courseFound);
   } catch (e) {
@@ -88,6 +88,19 @@ router.post("/", async (req, res) => {
     return res.send("新課程創建成功!");
   } catch (e) {
     return res.status(500).send("無法創建課程...");
+  }
+});
+
+// 讓學生透過課程ID註冊課程
+router.post("/enroll/:_id", async (req, res) => {
+  let { _id } = req.params;
+  try {
+    let course = await Course.findOne({ _id });
+    course.students.push(req.user._id);
+    await course.save();
+    res.send("註冊完成!");
+  } catch (e) {
+    return res.send(e);
   }
 });
 
